@@ -1,4 +1,4 @@
-const arrOfPeople = [
+let arrOfPeople = [
   {
     id: 2,
     name: "Charles Young",
@@ -50,9 +50,13 @@ const arrOfPeople = [
   }
 ]
 
-const listOfPlayers = []
-const blueTeam = []
-const redTeam = []
+// Arrays containing objects as they're moved from available players to a team. This functionality also allows the app to be quickly converted to a terminal app.
+
+let listOfPlayers = []
+let blueTeam = []
+let redTeam = []
+
+// Players class object is created when user assigns players from the list of available people. New Player objects are given extra keys using the constructor.
 
 class Player {
   constructor(id, name, age, skillSet, placeBorn) {
@@ -66,50 +70,62 @@ class Player {
     this.canThrowBall = true
     this.canDodgeBall = true
   }
-  console() {
-    console.log(this.name)
-    console.log("new player created")
-  }
+  // This method pushes the new object into the listOfPlayers array and filters the arrOfPeople array to remove the object.
   addToPlayers() {
-    if (this.canThrowBall && this.canDodgeBall && this.hasPaid && this.isHealthy) {
-      listOfPlayers.push(this.name)
+    if (this.canThrowBall && this.canDodgeBall && this.hasPaid && this.isHealthy && this.name != undefined) {
+      listOfPlayers.push(this)
+      arrOfPeople = arrOfPeople.filter(item => item.id !== this.id)
       console.log(`${this.name} has been added to the active players list.`)
     }
   }
 }
 
+// The BlueTeammate class object is created when a Player has been assigned to the blue team. The new class object inherits id, name, age, skillSet, and placeBorn from the Player constructor, and creates two new key/value pairs that are team specific
+
 class BlueTeammate extends Player {
-  constructor(name) {
-    super(name)
+  constructor(id, name, age, skillSet, placeBorn) {
+    super(id, name, age, skillSet, placeBorn)
     this.teamColor = "Blue"
     this.mascot = "Blue Thing"
   }
+  // The addToBlue() method pushes the new object into the blueTeam array, and filters the listOfPlayers array to remove the object.
   addToBlue() {
-    blueTeam.push(this.name)
-    bluePlayer()
+    blueTeam.push(this)
+    listOfPlayers = listOfPlayers.filter(item => item.id !== this.id)
+    console.log(this)
   }
 }
 
+// The RedTeammate class object is created when a Player has been assigned to the blue team. The new class object inherits id, name, age, skillSet, and placeBorn from the Player constructor, and creates two new key/value pairs that are team specific
+
 class RedTeammate extends Player {
-  constructor(name) {
-    super(name)
+  constructor(id, name, age, skillSet, placeBorn) {
+    super(id, name, age, skillSet, placeBorn)
     this.teamColor = "Red"
     this.mascot = "Red Thing"
   }
+  // The addToRed() method pushes the new object into the RedTeam array, and filters the listOfPlayers array to remove the object.
   addToRed() {
-    redTeam.push(this.name)
-    redPlayer()
+    redTeam.push(this)
+    listOfPlayers = listOfPlayers.filter(item => item.id !== this.id)
+    console.log(this)
   }
 }
 
+// The below uses the map method to loop through the arrOfPeople array and creates DOM elements for each object.
+// Since the DOM directly reflects each array, the innerHTML is reset before each loop so the DOM is always up to date.
 const listPeopleChoices = () => {
   const listElement = document.getElementById("people")
+  listElement.innerHTML = ""
+
   arrOfPeople.map(person => {
     const li = document.createElement("li")
+    li.classList.add("people-li")
     const button = document.createElement("button")
+    button.classList.add("people-btn")
     button.innerHTML = "Make Player"
     button.addEventListener("click", function () {
-      makePlayer(person.id, person.name)
+      makePlayer(person.id, person.name, person.age, person.skillSet, person.placeBorn)
     })
     li.appendChild(button)
     li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
@@ -117,35 +133,60 @@ const listPeopleChoices = () => {
   })
 }
 
-const makePlayer = (id, name) => {
-  const newPlayer = new Player(id, name)
-  newPlayer.addToPlayers(id, name)
-
+// The below uses the map method to loop through the listOfPlayers array and creates DOM elements for each object.  Extra buttons are added to choose either Blue or Red.
+// Since the DOM directly reflects each array, the innerHTML is reset before each loop so the DOM is always up to date.
+const makePlayer = (id, name, age, skillSet, placeBorn) => {
+  const newPlayer = new Player(id, name, age, skillSet, placeBorn)
+  newPlayer.addToPlayers(id, name, age, skillSet, placeBorn)
   const listElement = document.getElementById("players")
+  listElement.innerHTML = ""
 
-  const li = document.createElement("li")
-  const buttonBlue = document.createElement("button")
-  buttonBlue.innerHTML = "Blue Team"
-  buttonBlue.addEventListener("click", function () {
-    addToBlue(newPlayer.id, newPlayer.name)
+  listOfPlayers.map(person => {
+    const li = document.createElement("li")
+    const buttonBlue = document.createElement("button")
+    buttonBlue.innerHTML = "Blue Team"
+    buttonBlue.addEventListener("click", function () {
+      bluePlayer(person.id, person.name, person.age, person.skillSet, person.placeBorn)
+    })
+    li.appendChild(buttonBlue)
+    const buttonRed = document.createElement("button")
+    buttonRed.innerHTML = "Red Team"
+    buttonRed.addEventListener("click", function () {
+      redPlayer(person.id, person.name, person.age, person.skillSet, person.placeBorn)
+    })
+    li.appendChild(buttonRed)
+    li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
+    listElement.append(li)
   })
-  li.appendChild(buttonBlue)
-  const buttonRed = document.createElement("button")
-  buttonRed.innerHTML = "Red Team"
-  buttonRed.addEventListener("click", function () {
-    addToRed(newPlayer.id, newPlayer.name)
-  })
-  li.appendChild(buttonRed)
-  li.appendChild(document.createTextNode(newPlayer.name + " - " + newPlayer.skillSet))
-  listElement.append(li)
 
-  console.log(`li ${id} was clicked!`)
+  listPeopleChoices()
 }
 
-const bluePlayer = () => {
+// The below uses the map method to loop through the listOfPlayers array and creates DOM elements for each object.
+// The makePlayer() function is run at the end to remove the chosen player from the available players list
 
+const bluePlayer = (id, name, age, skillSet, placeBorn) => {
+  const newBluePlayer = new BlueTeammate(id, name, age, skillSet, placeBorn)
+  newBluePlayer.addToBlue(id, name, age, skillSet, placeBorn)
+  const listElement = document.getElementById("blue")
+  listElement.innerHTML = ""
+  blueTeam.map(person => {
+    const li = document.createElement("li")
+    li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
+    listElement.append(li)
+  })
+  makePlayer()
 }
 
-const redPlayer = () => {
-
+const redPlayer = (id, name, age, skillSet, placeBorn) => {
+  const newRedPlayer = new RedTeammate(id, name, age, skillSet, placeBorn)
+  newRedPlayer.addToRed(id, name, age, skillSet, placeBorn)
+  const listElement = document.getElementById("red")
+  listElement.innerHTML = ""
+  redTeam.map(person => {
+    const li = document.createElement("li")
+    li.appendChild(document.createTextNode(person.name + " - " + person.skillSet))
+    listElement.append(li)
+  })
+  makePlayer()
 }
