@@ -190,3 +190,31 @@ const redPlayer = (id, name, age, skillSet, placeBorn) => {
   })
   makePlayer()
 }
+
+// Unit Tests
+
+if (typeof describe === "function") {
+  describe("Player", function () {
+    it("Should create a player", function () {
+      const player1 = new Player(1, "Scott Tenefrancia")
+      assert.equal(player1.name, "Scott Tenefrancia")
+      assert.equal(player1.id, 1)
+    })
+  })
+  describe("Teammate", function () {
+    it("Should create a blue teammate", function () {
+      const teammate1 = new BlueTeammate(1, "Scott Tenefrancia")
+      assert.equal(teammate1.name, "Scott Tenefrancia")
+      assert.equal(teammate1.id, 1)
+      assert.equal(teammate1.color, "Blue")
+      assert.equal(teammate1.mascot, "Mascot")
+    })
+    it("Should create a red teammate", function () {
+      const teammate1 = new RedTeammate(1, "Scott Tenefrancia")
+      assert.equal(teammate1.name, "Scott Tenefrancia")
+      assert.equal(teammate1.id, 1)
+      assert.equal(teammate1.color, "Red")
+      assert.equal(teammate1.mascot, "Mascot")
+    })
+  })
+}
