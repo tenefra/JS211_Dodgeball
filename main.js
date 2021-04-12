@@ -193,6 +193,8 @@ const redPlayer = (id, name, age, skillSet, placeBorn) => {
 
 // Unit Tests
 
+var assert = require("assert")
+
 if (typeof describe === "function") {
   describe("Player", function () {
     it("Should create a player", function () {
@@ -206,15 +208,15 @@ if (typeof describe === "function") {
       const teammate1 = new BlueTeammate(1, "Scott Tenefrancia")
       assert.equal(teammate1.name, "Scott Tenefrancia")
       assert.equal(teammate1.id, 1)
-      assert.equal(teammate1.color, "Blue")
-      assert.equal(teammate1.mascot, "Mascot")
+      assert.equal(teammate1.teamColor, "Blue")
+      assert.equal(teammate1.mascot, "Blue Thing")
     })
     it("Should create a red teammate", function () {
       const teammate1 = new RedTeammate(1, "Scott Tenefrancia")
       assert.equal(teammate1.name, "Scott Tenefrancia")
       assert.equal(teammate1.id, 1)
-      assert.equal(teammate1.color, "Red")
-      assert.equal(teammate1.mascot, "Mascot")
+      assert.equal(teammate1.teamColor, "Red")
+      assert.equal(teammate1.mascot, "Red Thing")
     })
   })
 }
